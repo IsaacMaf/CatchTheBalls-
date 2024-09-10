@@ -1,0 +1,99 @@
+// Selecionar elementos
+const rectangle = document.getElementById('rectangle');
+const gameArea = document.getElementById('game-area');
+const scoreElement = document.getElementById('score');
+
+// Inicializar variáveis
+let score = 0;
+let dropSpeed = 5; // Velocidade inicial da queda das bolinhas
+let ballCreationInterval = 2000; // Intervalo inicial de criação das bolinhas em milissegundos
+let ballCreationTimer; // Timer para a criação das bolinhas
+
+// Função para criar uma nova bolinha
+function createBall() {
+    const ball = document.createElement('div');
+    const size = Math.random() * 50 + 20; // Tamanho entre 20px e 70px
+    ball.style.width = `${size}px`;
+    ball.style.height = `${size}px`;
+    ball.style.position = 'absolute';
+    ball.style.backgroundColor = 'green';
+    ball.style.borderRadius = '50%'; // Faz com que a forma seja uma bolinha
+    ball.style.left = `${Math.random() * (gameArea.clientWidth - size)}px`;
+    ball.style.top = '0px';
+    gameArea.appendChild(ball);
+
+    // Animação para a bolinha cair
+    const dropInterval = setInterval(() => {
+        const ballRect = ball.getBoundingClientRect();
+        const gameRect = gameArea.getBoundingClientRect();
+
+        // Verifica se a bolinha saiu da área de jogo
+        if (ballRect.top + ballRect.height > gameRect.bottom) {
+            clearInterval(dropInterval);
+            gameArea.removeChild(ball);
+            // Reiniciar pontuação e velocidade
+            score = 0;
+            scoreElement.textContent = score;
+            dropSpeed = 5; // Velocidade inicial
+            ballCreationInterval = 2000; // Intervalo inicial de criação das bolinhas
+
+            // Reiniciar o intervalo de criação de bolinhas
+            clearInterval(ballCreationTimer);
+            startBallCreation();
+        } else {
+            ball.style.top = `${ballRect.top + dropSpeed - gameRect.top}px`;
+        }
+
+        // Verificar colisão com o retângulo
+        const rectangleRect = rectangle.getBoundingClientRect();
+        if (ballRect.top + ballRect.height > rectangleRect.top &&
+            ballRect.left < rectangleRect.left + rectangleRect.width &&
+            ballRect.left + ballRect.width > rectangleRect.left) {
+            score++;
+            scoreElement.textContent = score;
+            dropSpeed += 0.1; // Aumenta a velocidade de queda a cada ponto
+            
+            // Aumentar a taxa de criação de bolinhas, até o limite de 2 bolinhas por segundo
+            ballCreationInterval = Math.max(1000, 2000 - (score * 100));
+            
+            // Reiniciar o intervalo de criação de bolinhas
+            clearInterval(ballCreationTimer);
+            startBallCreation();
+            
+            gameArea.removeChild(ball);
+            clearInterval(dropInterval);
+        }
+    }, 20);
+}
+
+// Função para iniciar a criação das bolinhas
+function startBallCreation() {
+    ballCreationTimer = setInterval(createBall, ballCreationInterval);
+}
+
+// Função para iniciar o jogo
+function startGame() {
+    startBallCreation(); // Iniciar a criação de bolinhas
+}
+
+// Eventos de arrastar e soltar
+rectangle.addEventListener('mousedown', (event) => {
+    const gameRect = gameArea.getBoundingClientRect();
+    const offsetX = event.clientX - rectangle.getBoundingClientRect().left;
+
+    function onMouseMove(e) {
+        const newLeft = e.clientX - gameRect.left - offsetX;
+        rectangle.style.left = `${Math.min(Math.max(newLeft, 0), gameArea.clientWidth - rectangle.clientWidth)}px`;
+    }
+
+    function onMouseUp() {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+});
+
+// Iniciar o jogo
+startGame();
