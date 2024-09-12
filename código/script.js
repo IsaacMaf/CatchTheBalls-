@@ -4,8 +4,8 @@ const gameArea = document.getElementById('game-area');
 const scoreElement = document.getElementById('score');
 
 // aqui eu defino o tamanho da caixa onde o jogador vai poder controlar o retângulo
-gameArea.style.width = ${window.innerWidth / 4.5}px; //divide por 4.5 do tamanho original
-gameArea.style.height = ${window.innerHeight * 0.8}px; //multiplica por 0.8 do tamanho original
+gameArea.style.width = `${window.innerWidth / 4.5}px`; //divide por 4.5 do tamanho original
+gameArea.style.height = `${window.innerHeight * 0.8}px`; //multiplica por 0.8 do tamanho original
 
 // lugar onde vai se iniciar as variáveis das bolinhas
 let score = 0;
@@ -16,7 +16,7 @@ let ballCreationTimer; // um "timer" para a criação
 // ajusta especificamente as medidas do retângulo
 const initialRectangleWidth = 100; // esta é a largura inicial dele
 const additionalWidth = 40; // este é o tanto de pixels que eu quero que aumente
-rectangle.style.width = ${initialRectangleWidth + additionalWidth}px; //e aqui é a largura final
+rectangle.style.width = `${initialRectangleWidth + additionalWidth}px`; //e aqui é a largura final
 
 // função que cria bolinhas
 function createBall() {
@@ -24,12 +24,12 @@ function createBall() {
     const size = Math.random() * 80 + 20; // aqui é um tamanho entre 20 a 100 pixels
     const ballDropSpeed = 5 * (1 - (size - 20) / 80); // e aqui ajusta a velocidade delas pelo tamanho
 
-    ball.style.width = ${size}px; //define a largura
-    ball.style.height = ${size}px; //define a altura
+    ball.style.width = `${size}px`; //define a largura
+    ball.style.height = `${size}px`; //define a altura
     ball.style.position = 'absolute'; //aqui é a posição da bolinha
     ball.style.backgroundColor = 'green'; // a cor de todas elas
     ball.style.borderRadius = '50%'; // "BorderRadius vai ter a função de arredondar a estrutura pra transformar numa bola"
-    ball.style.left = ${Math.random() * (gameArea.clientWidth - size)}px;
+    ball.style.left = `${Math.random() * (gameArea.clientWidth - size)}px`;
     ball.style.top = '0px';
     gameArea.appendChild(ball); //este método(appendChild) faz com que o "gameArena" herde o que tem em "ball"
 
@@ -58,8 +58,8 @@ function createBall() {
                 if (Math.abs(xOffset) > zigzagAmplitude) {
                     zigzagDirection *= -1; // como eu disse, o -1 vai trocar a posição da bola
                 }
-                ball.style.top = ${ballRect.top + ballDropSpeed - gameRect.top}px;
-                ball.style.left = ${Math.min(Math.max(ballRect.left + xOffset - gameRect.left, 0), gameArea.clientWidth - ballRect.width)}px;
+                ball.style.top = `${ballRect.top + ballDropSpeed - gameRect.top}px`;
+                ball.style.left = `${Math.min(Math.max(ballRect.left + xOffset - gameRect.left, 0), gameArea.clientWidth - ballRect.width)}px`;
             }
 
             // nesta parte é verificado a colisão do retângulo controlado pelo jogador
@@ -94,7 +94,7 @@ function createBall() {
                 gameArea.removeChild(ball);
                 resetGame(); // Reinicia o jogo
             } else {
-                ball.style.top = ${ballRect.top + ballDropSpeed - gameRect.top}px; //parte do código otmizada para usar a taxa de caída de bolas
+                ball.style.top = `${ballRect.top + ballDropSpeed - gameRect.top}px`; //parte do código otmizada para usar a taxa de caída de bolas
             }
 
             //
@@ -150,7 +150,7 @@ rectangle.addEventListener('mousedown', (event) => { //quando o mouse estiver pr
 
     function onMouseMove(e) { 
         const newLeft = e.clientX - gameRect.left - offsetX;
-        rectangle.style.left = ${Math.min(Math.max(newLeft, 0), gameArea.clientWidth - rectangle.clientWidth)}px; //função que faz mover o retângulo somente no eixo X
+        rectangle.style.left = `${Math.min(Math.max(newLeft, 0), gameArea.clientWidth - rectangle.clientWidth)}px`; //função que faz mover o retângulo somente no eixo X
     }
 
     function onMouseUp() {
